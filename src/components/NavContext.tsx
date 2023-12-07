@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-scroll';
 import NSLogo from '../assets/NSLogo.png';
@@ -77,13 +77,7 @@ console.log('navbar context being used');
 
 const NavContext = () => {
   // context
-  const {
-    isDesktop,
-    toggled,
-    setToggled,
-    scrollBackground,
-    setScrollBackground,
-  } = useContext(NavbarContext);
+  const { isDesktop, toggled, setToggled, scrollBackground } = useContext(NavbarContext);
 
   return (
     <nav

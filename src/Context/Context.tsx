@@ -5,6 +5,7 @@ import {
   Dispatch,
   SetStateAction,
   ReactNode,
+  useMemo,
 } from 'react';
 import { useMediaQuery } from '../utils/useMediaQuery';
 
@@ -17,12 +18,15 @@ export type NavbarContextProps = {
   setScrollBackground: Dispatch<SetStateAction<boolean>>;
 };
 
+// interface context provider props
 export interface ContextProviderProps {
   children: ReactNode;
 }
 
 // create context
-export const NavbarContext = createContext<NavbarContextProps | null>(null);
+export const NavbarContext = createContext<NavbarContextProps>(
+  {} as NavbarContextProps
+);
 
 export const NavProvider = ({ children }: ContextProviderProps) => {
   // media query hook
@@ -53,16 +57,19 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
     }
   }, [toggled]);
 
+  const acceptedValue = useMemo(
+    () => ({
+      isDesktop,
+      toggled,
+      setToggled,
+      scrollBackground,
+      setScrollBackground,
+    }),
+    [isDesktop, toggled, setToggled, scrollBackground, setScrollBackground]
+  );
+
   return (
-    <NavbarContext.Provider
-      value={{
-        isDesktop,
-        toggled,
-        setToggled,
-        scrollBackground,
-        setScrollBackground,
-      }}
-    >
+    <NavbarContext.Provider value={acceptedValue}>
       {children}
     </NavbarContext.Provider>
   );
