@@ -195,4 +195,3 @@ Epilogue:
 In the aftermath, the city emerged unscathed, its new firewall an unbreakable shield. Alex and the team were hailed as heroes, their coding skills having saved the city once more. The control interface, with its animated navbar and hero section, stood as a symbol of their triumph.
 
 As the world rebuilt from the ruins, the tale of Alex and the fortress city spread, inspiring others to blend technology and resilience. The "Code of the Undead" saga continued, not just as a story of survival, but as a beacon of innovation in the face of darkness.
-```

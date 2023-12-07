@@ -73,6 +73,8 @@ const navItemMotion = {
   },
 };
 
+console.log('navbar without context being used');
+
 const Nav = () => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');

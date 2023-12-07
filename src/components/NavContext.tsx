@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMediaQuery } from '../utils/useMediaQuery';
 import { Link } from 'react-scroll';
 import NSLogo from '../assets/NSLogo.png';
+import { NavbarContext } from '../Context/Context';
 
 // framer variants
 // nav variant
@@ -73,33 +73,17 @@ const navItemMotion = {
   },
 };
 
+console.log('navbar context being used');
+
 const NavContext = () => {
-  // media query hook
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
-  // hamburger menu toggle state
-  const [toggled, setToggled] = useState<boolean>(false);
-  // state for background change on scroll
-  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
-
-  // change background function
-  const changeBackground = () => {
-    if (window.scrollY > 50) {
-      setScrollBackground(true);
-    } else {
-      setScrollBackground(false);
-    }
-  };
-  // event listener for scroll
-  window.addEventListener('scroll', changeBackground);
-
-  // useEffect for preventing scroll when nav is toggled
-  useEffect(() => {
-    if (toggled) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [toggled]);
+  // context
+  const {
+    isDesktop,
+    toggled,
+    setToggled,
+    scrollBackground,
+    setScrollBackground,
+  } = useContext(NavbarContext);
 
   return (
     <nav
