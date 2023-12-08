@@ -1125,7 +1125,215 @@ const About = () => {
 export default About;
 ```
 
+## Time To Get Some Context
+![gif, context](https://media.giphy.com/media/5SBPr8uRojC3D2pW96/giphy.gif)
 
+Context is a state management tool that allows you to share data in different parts of your applicatoin without having to pass it through each component one by one (prop drilling). 
+
+### Creating Context
+It's time to dust off that `context` directory that you created. What we're going to be doing is taking all of the logic from our Nav.tsx component and placing it a context file.
+
+Import Dependencies - 
+```js
+import {
+  createContext,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  ReactNode,
+  useMemo,
+} from 'react';
+import { useMediaQuery } from '../utils/useMediaQuery';
+```
+In the dependencies you'll see some terms you have seen and also some you haven't seen yet. Let's talk about some of them -
+```js
+createContext // creates context object for passing data
+Dispatch // a function that takes an action
+SetStateAction // a specific type used when updating state
+useMemo // a hook that can be used to help prevent unnecessary re-renders and improve performance
+```
+Setup Types - 
+```js
+// type navbar context props
+type NavbarContextProps = {
+  isDesktop: boolean;
+  toggled: boolean;
+  setToggled: Dispatch<SetStateAction<boolean>>;
+  scrollBackground: boolean;
+  setScrollBackground: Dispatch<SetStateAction<boolean>>;
+};
+
+// interface context provider props
+interface ContextProviderProps {
+  children: ReactNode;
+}
+```
+Talking Types - 
+```js
+// type navbar context props
+type NavbarContextProps = {
+  isDesktop // boolean type because the view will either be on desktop (true) or not (false)
+  toggled // boolean type because the menu will either be toggled (true) or not (false)
+  setToggled // passing an action to our dispatch function to set the state value to a boolean value (true/false)
+  scrollBackground // boolean type because you'll either have scrolled passed 50px (true) or not (false)
+  setScrollBackground // passing an action to our dispatch function to set the state value to a boolean value (true/false)
+};
+
+// interface context provider props
+interface ContextProviderProps {
+  children // the children prop represents the content that will be wrapped by the provider, a ReactNode which is a type that includes anything that can be rendered in React, in this case a React component
+}
+```
+In summary, NavbarContextProps is a custom type that is defining the structure and type of the data being used, such as the state variable and functions to update them. ContextProviderProps is an interface that is defining the props being accepted by the provider component, the children (React components) it will render.
+
+Create Context -
+```js
+export const NavbarContext = createContext<NavbarContextProps>({} as NavbarContextProps);
+```
+In `NavbarContext` we're creating a context object and giving it the NavbarContextProps type that we created above. When you createContext you give it a default value. In our case we're giving it a default value of an empty object and through type assertion, which means we're explicitly telling the empty object (in this instance) to be a specific type, `as NavbarContextProps` in this instance.
+
+Create The Provider - 
+```js
+export const NavProvider = ({ children }: ContextProviderProps) => {
+  return (
+    <NavbarContext.Provider value={acceptedValue}>
+      {children}
+    </NavbarContext.Provider>
+  );
+};
+```
+The `NavProvider` is a function component that houses all of the logic that you've passed to it, such as state, and it will "provide" context to the components that it's wrapping, like our nav component. 
+
+Adding All The Logic To The Provider - 
+```js
+export const NavProvider = ({ children }: ContextProviderProps) => {
+  // media query hook
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  // hamburger menu toggle state
+  const [toggled, setToggled] = useState<boolean>(false);
+  // background change on scroll state
+  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
+
+  // change background function
+  const changeBackground = () => {
+    if (window.scrollY > 50) {
+      setScrollBackground(true);
+    } else {
+      setScrollBackground(false);
+    }
+  };
+
+  // event listener for scroll
+  window.addEventListener('scroll', changeBackground);
+
+  // useEffect for preventing scroll when nav is toggled
+  useEffect(() => {
+    if (toggled) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [toggled]);
+
+  const acceptedValues = useMemo(
+    () => ({
+      isDesktop,
+      toggled,
+      setToggled,
+      scrollBackground,
+      setScrollBackground,
+    }),
+    [isDesktop, toggled, setToggled, scrollBackground, setScrollBackground]
+  );
+
+  return (
+    <NavbarContext.Provider value={acceptedValues}>
+      {children}
+    </NavbarContext.Provider>
+  );
+};
+```
+### Checkpoint
+Updated Context.tsx - 
+```js
+import {
+  createContext,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  ReactNode,
+  useMemo,
+} from 'react';
+import { useMediaQuery } from '../utils/useMediaQuery';
+
+// type navbar context props
+type NavbarContextProps = {
+  isDesktop: boolean;
+  toggled: boolean;
+  setToggled: Dispatch<SetStateAction<boolean>>;
+  scrollBackground: boolean;
+  setScrollBackground: Dispatch<SetStateAction<boolean>>;
+};
+
+// interface context provider props
+interface ContextProviderProps {
+  children: ReactNode;
+}
+
+// create context
+export const NavbarContext = createContext<NavbarContextProps>(
+  {} as NavbarContextProps
+);
+
+export const NavProvider = ({ children }: ContextProviderProps) => {
+  // media query hook
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  // hamburger menu toggle state
+  const [toggled, setToggled] = useState<boolean>(false);
+  // background change on scroll state
+  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
+
+  // change background function
+  const changeBackground = () => {
+    if (window.scrollY > 50) {
+      setScrollBackground(true);
+    } else {
+      setScrollBackground(false);
+    }
+  };
+
+  // event listener for scroll
+  window.addEventListener('scroll', changeBackground);
+
+  // useEffect for preventing scroll when nav is toggled
+  useEffect(() => {
+    if (toggled) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [toggled]);
+
+  const acceptedValues = useMemo(
+    () => ({
+      isDesktop,
+      toggled,
+      setToggled,
+      scrollBackground,
+      setScrollBackground,
+    }),
+    [isDesktop, toggled, setToggled, scrollBackground, setScrollBackground]
+  );
+
+  return (
+    <NavbarContext.Provider value={acceptedValues}>
+      {children}
+    </NavbarContext.Provider>
+  );
+};
+```
 
 # Code of the Undead: Firewall Chronicles
 

@@ -9,8 +9,8 @@ import {
 } from 'react';
 import { useMediaQuery } from '../utils/useMediaQuery';
 
-// interface navbar context props
-export type NavbarContextProps = {
+// type navbar context props
+type NavbarContextProps = {
   isDesktop: boolean;
   toggled: boolean;
   setToggled: Dispatch<SetStateAction<boolean>>;
@@ -19,7 +19,7 @@ export type NavbarContextProps = {
 };
 
 // interface context provider props
-export interface ContextProviderProps {
+interface ContextProviderProps {
   children: ReactNode;
 }
 
@@ -57,7 +57,7 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
     }
   }, [toggled]);
 
-  const acceptedValue = useMemo(
+  const acceptedValues = useMemo(
     () => ({
       isDesktop,
       toggled,
@@ -69,7 +69,7 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
   );
 
   return (
-    <NavbarContext.Provider value={acceptedValue}>
+    <NavbarContext.Provider value={acceptedValues}>
       {children}
     </NavbarContext.Provider>
   );
