@@ -5,9 +5,11 @@ import { useEffect } from 'react';
 import { NavProvider } from './Context/Context';
 
 function App() {
+  // initialize AOS
   useEffect(() => {
     Aos.init({});
   }, []);
+
   return (
     <>
       <NavProvider>

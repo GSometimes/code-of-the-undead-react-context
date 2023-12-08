@@ -91,6 +91,7 @@ const Nav = () => {
       setScrollBackground(false);
     }
   };
+  
   // event listener for scroll
   window.addEventListener('scroll', changeBackground);
 

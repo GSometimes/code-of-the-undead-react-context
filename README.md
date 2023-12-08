@@ -98,6 +98,18 @@ In your `src` directory, you'll want to create directories for `assets`, `compon
 
 While Tailwind has a pretty vast library of colors, fonts, shadows, etc., it does give you the ability to add your own. To prepare us for what's coming later we're going to pre-emptively add colors, a default font, and a box-shadow, so you can how to add custom CSS to your application that is using Tailwind CSS.
 
+Add fonts to index.html -
+
+```js
+<!-- font import -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+```
+
 tailwind.config.js -
 
 ```js
@@ -196,6 +208,18 @@ const [toggled, setToggled] = useState < boolean > false;
 const [scrollBackground, setScrollBackground] = useState < boolean > false;
 ```
 
+### React Smooth Scroll
+
+Since our React application is a single scrollable page we'll be implementing smooth scrolling, with React-Scroll, to navigate it. React-Scroll is a package that allows you to easily setup a smooth scrolling animation in your application. As we build out the nav and hero components you'll see `<Link></Link>` tags being used. While it looks exactly like Link tags in React Router (or Next Router for those of you using it), instead of routing to a different page it's routed to an anchor that is set in each component, for example id='home' in the hero component. You can learn more about it [here](https://www.npmjs.com/package/react-scroll).
+
+Example React-Scroll Link tag -
+
+```js
+<Link to='home' duration={0} smooth={true} className='cursor-pointer'>
+  Home
+</Link>
+```
+
 ### Framer Motion
 
 Framer Motion is powerful animation library for React applications through the use of `motion` components, for example `motion.div`, as you'll be using to animate the navbar component in this lesson. If you'd like to learn more about Framer Motion you can view the docs [here](https://www.framer.com/motion/introduction/).
@@ -279,8 +303,10 @@ const navItemMotion = {
 ```
 
 #### Checkpoint
-The `Nax.tsx` component should currently look like this - 
-``` js
+
+The `Nax.tsx` component should currently look like this -
+
+```js
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMediaQuery } from '../utils/useMediaQuery';
@@ -356,107 +382,125 @@ const navItemMotion = {
   },
 };
 
-const  Nav  = () => {
+const Nav = () => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState<boolean>(false);
+  const [toggled, setToggled] = useState < boolean > false;
   // state for background change on scroll
-  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
-	return (
-		<div>Nav</div>
-	)
-}
+  const [scrollBackground, setScrollBackground] = useState < boolean > false;
+  return <div>Nav</div>;
+};
 
-export  default  Nav;
-``` 
+export default Nav;
+```
+
 ### Conditionally Creating The Nav
-At this point you'll currently have most of the logic you'll need to make this nav work minus some logic that will be added once there is actually a navbar to interact with. 
+
+At this point you'll currently have most of the logic you'll need to make this nav work minus some logic that will be added once there is actually a navbar to interact with.
 
 Let's start conditionally creating the nav. We'll start by creating the nav container. Update the `div` to a `nav` and add in some styles.
+
 ```js
 <nav className='bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200'></nav>
 ```
-#### Conditional Rendering with useMediaQuery hook
-Using the variable that we instantiated, `isDesktop` we can build out our nav and have it styled differently depending on whether or not the viewport is greater than or less than 1024px. We'll be creating a view for `isDesktop` (Desktop/Laptop), `!isDesktop` (Tablet/Mobile), and the `toggled && !isDesktop`. 
 
-isDesktop - 
+#### Conditional Rendering with useMediaQuery hook
+
+Using the variable that we instantiated, `isDesktop` we can build out our nav and have it styled differently depending on whether or not the viewport is greater than or less than 1024px. We'll be creating a view for `isDesktop` (Desktop/Laptop), `!isDesktop` (Tablet/Mobile), and the `toggled && !isDesktop`.
+
+isDesktop -
+
 ```js
-{/* navbar if desktop */}
-{isDesktop && (
-  <>
-    <Link to='home' duration={0} smooth={true} className='cursor-pointer'>
-      <div className='flex items-center justify-center'>
-        <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
-        <div className='flex flex-col justify-center -mx-2 leading-4'>
-          <h1 className='font-black text-primary-green'>Neurosynth</h1>
-          <h1 className='font-normal'>Dynamics</h1>
+{
+  /* navbar if desktop */
+}
+{
+  isDesktop && (
+    <>
+      <Link to='home' duration={0} smooth={true} className='cursor-pointer'>
+        <div className='flex items-center justify-center'>
+          <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+          <div className='flex flex-col justify-center -mx-2 leading-4'>
+            <h1 className='font-black text-primary-green'>Neurosynth</h1>
+            <h1 className='font-normal'>Dynamics</h1>
+          </div>
         </div>
+      </Link>
+      <div className='flex items-center gap-4 text-sm'>
+        <Link
+          to='about'
+          duration={0}
+          smooth={true}
+          className='cursor-pointer text-base hover:text-primary-green transition duration-200'
+        >
+          Learn More
+        </Link>
+        <Link to='contact' duration={0} smooth={true} className=''>
+          <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 shadow-custom shadow-primary-green transition duration-200'>
+            Contact Us
+          </button>
+        </Link>
       </div>
-    </Link>
-    <div className='flex items-center gap-4 text-sm'>
-      <Link
-        to='about'
-        duration={0}
-        smooth={true}
-        className='cursor-pointer text-base hover:text-primary-green transition duration-200'
-      >
-        Learn More
-      </Link>
-      <Link to='contact' duration={0} smooth={true} className=''>
-        <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 shadow-custom shadow-primary-green transition duration-200'>
-          Contact Us
-        </button>
-      </Link>
-    </div>
-  </>
-)}
+    </>
+  );
+}
 ```
+
 !isDesktop -
+
 ```js
-{/* navbar for tablet and below */}
-{/* hamburger icon */}
-{!isDesktop && (
-  <div className='flex items-center justify-between w-full'>
-    <Link
-      to='home'
-      smooth={true}
-      duration={0}
-      className='cursor-pointer'
-      onClick={() => setToggled(false)}
-    >
-      <div className='flex items-center justify-center'>
-        <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
-        <div className='flex flex-col justify-center -mx-2 leading-4'>
-          <h1 className='font-black text-primary-green'>Neurosynth</h1>
-          <h1 className='font-normal'>Dynamics</h1>
+{
+  /* navbar for tablet and below */
+}
+{
+  /* hamburger icon */
+}
+{
+  !isDesktop && (
+    <div className='flex items-center justify-between w-full'>
+      <Link
+        to='home'
+        smooth={true}
+        duration={0}
+        className='cursor-pointer'
+        onClick={() => setToggled(false)}
+      >
+        <div className='flex items-center justify-center'>
+          <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+          <div className='flex flex-col justify-center -mx-2 leading-4'>
+            <h1 className='font-black text-primary-green'>Neurosynth</h1>
+            <h1 className='font-normal'>Dynamics</h1>
+          </div>
         </div>
+      </Link>
+      <div
+        onClick={() => setToggled((prevToggled) => !prevToggled)}
+        className='space-y-1.5 cursor-pointer z-50'
+      >
+        <motion.span
+          animate={{ rotateZ: toggled ? 45 : 0, y: toggled ? 8 : 0 }}
+          className='block h-0.5 w-8 bg-black'
+        ></motion.span>
+        <motion.span
+          animate={{ scale: toggled ? 0 : 1 }}
+          className='block h-0.5 w-8 bg-black'
+        ></motion.span>
+        <motion.span
+          animate={{
+            rotateZ: toggled ? -45 : 0,
+            y: toggled ? -8 : 0,
+          }}
+          className='block h-0.5 w-8 bg-black'
+        ></motion.span>
       </div>
-    </Link>
-    <div
-      onClick={() => setToggled((prevToggled) => !prevToggled)}
-      className='space-y-1.5 cursor-pointer z-50'
-    >
-      <motion.span
-        animate={{ rotateZ: toggled ? 45 : 0, y: toggled ? 8 : 0 }}
-        className='block h-0.5 w-8 bg-black'
-      ></motion.span>
-      <motion.span
-        animate={{ scale: toggled ? 0 : 1 }}
-        className='block h-0.5 w-8 bg-black'
-      ></motion.span>
-      <motion.span
-        animate={{
-          rotateZ: toggled ? -45 : 0,
-          y: toggled ? -8 : 0,
-        }}
-        className='block h-0.5 w-8 bg-black'
-      ></motion.span>
     </div>
-  </div>
-)}
+  );
+}
 ```
-toggled and !isDesktop - 
+
+toggled and !isDesktop -
+
 ```js
 <AnimatePresence>
   {/* nav container */}
@@ -481,11 +525,7 @@ toggled and !isDesktop -
           </Link>
         </motion.div>
         <motion.div variants={navItemMotion}>
-          <Link
-            to='contact'
-            smooth={true}
-            onClick={() => setToggled(false)}
-          >
+          <Link to='contact' smooth={true} onClick={() => setToggled(false)}>
             <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 sm:p-4 shadow-custom shadow-primary-green transition duration-200 text-2xl sm:text-4xl'>
               Join Trial
             </button>
@@ -495,6 +535,594 @@ toggled and !isDesktop -
     </motion.div>
   )}
 </AnimatePresence>
+```
+
+Remember that logic we'd be adding after the nav was built? Let's add that to our navbar. We're going to be adding two things, a style change to the nav when you scroll and some logic to prevent a user from scrolling when the mobile nav container is open.
+
+changeBackground and eventListener -
+
+```js
+// change background function
+const changeBackground = () => {
+  if (window.scrollY > 50) {
+    setScrollBackground(true);
+  } else {
+    setScrollBackground(false);
+  }
+};
+
+// event listener for scroll
+window.addEventListener('scroll', changeBackground);
+```
+
+useEffect -
+
+```js
+// useEffect for preventing scroll when nav is toggled
+useEffect(() => {
+  if (toggled) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'auto';
+  }
+}, [toggled]);
+```
+
+### Checkpoint
+
+At this point your navbar should be built and responsive. What'll be coming next is building out some more components so you can see how React-Scroll works, setting up Animate on Scroll (AOS), and refactoring the nav logic to use Context.
+
+Current `Nax.tsx` code -
+
+```js
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMediaQuery } from '../utils/useMediaQuery';
+import { Link } from 'react-scroll';
+import NSLogo from '../assets/NSLogo.png';
+
+// framer variants
+// nav variant
+const navMotion = {
+  // initial state - hidden
+  hidden: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      when: 'beforeChildren',
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      when: 'afterChildren',
+      staggerChildren: 0.15,
+      staggerDirection: -1,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+// nav item variant
+const navItemMotion = {
+  // initial state - hidden
+  hidden: {
+    opacity: 0,
+    y: 100,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    opacity: 0,
+    y: 50,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+};
+const Nav = () => {
+  // media query hook
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  // hamburger menu toggle state
+  const [toggled, setToggled] = useState < boolean > false;
+  // state for background change on scroll
+  const [scrollBackground, setScrollBackground] = useState < boolean > false;
+
+  // change background function
+  const changeBackground = () => {
+    if (window.scrollY > 50) {
+      setScrollBackground(true);
+    } else {
+      setScrollBackground(false);
+    }
+  };
+
+  // event listener for scroll
+  window.addEventListener('scroll', changeBackground);
+
+  // useEffect for preventing scroll when nav is toggled
+  useEffect(() => {
+    if (toggled) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [toggled]);
+
+  return (
+    <nav
+      className={
+        scrollBackground
+          ? 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200 shadow-custom shadow-primary-green'
+          : 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200'
+      }
+    >
+      {/* navbar if desktop */}
+      {isDesktop && (
+        <>
+          <Link to='home' duration={0} smooth={true} className='cursor-pointer'>
+            <div className='flex items-center justify-center'>
+              <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+              <div className='flex flex-col justify-center -mx-2 leading-4'>
+                <h1 className='font-black text-primary-green'>Neurosynth</h1>
+                <h1 className='font-normal'>Dynamics</h1>
+              </div>
+            </div>
+          </Link>
+          <div className='flex items-center gap-4 text-sm'>
+            <Link
+              to='about'
+              duration={0}
+              smooth={true}
+              className='cursor-pointer text-base hover:text-primary-green transition duration-200'
+            >
+              Learn More
+            </Link>
+            <Link to='contact' duration={0} smooth={true} className=''>
+              <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 shadow-custom shadow-primary-green transition duration-200'>
+                Contact Us
+              </button>
+            </Link>
+          </div>
+        </>
+      )}
+
+      {/* navbar for tablet and below */}
+      {/* hamburger icon */}
+      {!isDesktop && (
+        <div className='flex items-center justify-between w-full'>
+          <Link
+            to='home'
+            smooth={true}
+            duration={0}
+            className='cursor-pointer'
+            onClick={() => setToggled(false)}
+          >
+            <div className='flex items-center justify-center'>
+              <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+              <div className='flex flex-col justify-center -mx-2 leading-4'>
+                <h1 className='font-black text-primary-green'>Neurosynth</h1>
+                <h1 className='font-normal'>Dynamics</h1>
+              </div>
+            </div>
+          </Link>
+          <div
+            onClick={() => setToggled((prevToggled) => !prevToggled)}
+            className='space-y-1.5 cursor-pointer z-50'
+          >
+            <motion.span
+              animate={{ rotateZ: toggled ? 45 : 0, y: toggled ? 8 : 0 }}
+              className='block h-0.5 w-8 bg-black'
+            ></motion.span>
+            <motion.span
+              animate={{ scale: toggled ? 0 : 1 }}
+              className='block h-0.5 w-8 bg-black'
+            ></motion.span>
+            <motion.span
+              animate={{
+                rotateZ: toggled ? -45 : 0,
+                y: toggled ? -8 : 0,
+              }}
+              className='block h-0.5 w-8 bg-black'
+            ></motion.span>
+          </div>
+        </div>
+      )}
+
+      {/* hamburger menu */}
+      <AnimatePresence>
+        {/* nav container */}
+        {toggled && !isDesktop && (
+          <motion.div
+            variants={navMotion}
+            initial='hidden'
+            animate='visible'
+            exit='exit'
+            className='fixed top-[80px] left-4 w-[calc(100%-2rem)] h-screen flex items-center justify-center z-10 shadow-custom shadow-primary-green bg-white outline-primary-green'
+          >
+            {/* nav links container */}
+            <div className='flex flex-col items-center justify-center gap-12 h-full'>
+              <motion.div variants={navItemMotion}>
+                <Link
+                  to='about'
+                  smooth={true}
+                  className='cursor-pointer text-2xl sm:text-4xl'
+                  onClick={() => setToggled(false)}
+                >
+                  Learn More
+                </Link>
+              </motion.div>
+              <motion.div variants={navItemMotion}>
+                <Link
+                  to='contact'
+                  smooth={true}
+                  onClick={() => setToggled(false)}
+                >
+                  <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 sm:p-4 shadow-custom shadow-primary-green transition duration-200 text-2xl sm:text-4xl'>
+                    Join Trial
+                  </button>
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+};
+
+export default Nav;
+```
+
+## Building Out The Rest Of The Components
+
+In your components directory create the following -
+
+Hero.tsx -
+
+```js
+import { Link } from 'react-scroll';
+
+const Hero = () => {
+  return (
+    <div id='home' className='min-h-screen flex items-center justify-center'>
+      <div className='px-4'>
+        <h1 className='text-primary-green text-5xl font-bold tracking-widest sm:text-7xl md:text-8xl'>
+          Neurosynth
+        </h1>
+        <h1 className='text-5xl tracking-widest sm:text-7xl md:text-8xl'>
+          Dynamics
+        </h1>
+        <p className='mt-4 font-bold text-xl sm:text-2xl tracking-widest '>
+          Engineering Evolution, Beyond Imagination
+        </p>
+        <div className='flex items-center gap-4 mt-4'>
+          <Link
+            to='contact'
+            smooth={true}
+            duration={0}
+            className='cursor-pointer'
+          >
+            <button className='bg-primary-green text-white text-xl hover:bg-green-700 px-3.5 py-2.5 shadow-custom shadow-primary-green transition duration-200'>
+              Join Trial
+            </button>
+          </Link>
+          <Link
+            to='about'
+            smooth={true}
+            duration={0}
+            className='cursor-pointer'
+          >
+            <button className='text-xl font-semibold leading-6 hover:text-primary-green transition duration-200'>
+              Learn more <span aria-hidden='true'>→</span>
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Hero;
+```
+
+About.tsx -
+
+```js
+import React from 'react';
+
+const About = () => {
+  return (
+    <div id='about' className='min-h-screen flex items-center justify-center'>
+      <div className='mx-auto max-w-7xl px-6 lg:px-8'>
+        <div className='mx-auto max-w-2xl lg:mx-0'>
+          <h2 className='text-4xl font-bold tracking-tight text-primary-green sm:text-6xl'>
+            About Us
+          </h2>
+          <p className='mt-6 text-lg leading-8'>
+            At Neurosynth Dynamics, we are at the forefront of biotechnological
+            and pharmaceutical innovation, dedicated to the relentless pursuit
+            of genetic engineering marvels and cybernetic advancements. Our
+            esteemed conglomerate is celebrated for breakthroughs that not only
+            push the boundaries of medical science but also integrate
+            cutting-edge computational biology to enhance human life. While our
+            public endeavors champion medical progress, our clandestine research
+            delves into the fusion of technology and biology, creating
+            groundbreaking neural-interface technologies and bio-coded materials
+            designed to amplify human capabilities beyond current limitations.
+          </p>
+          <p className='mt-6 text-lg leading-8'>
+            In our quest for transcendent innovation, we recognize the profound
+            responsibility that accompanies our groundbreaking work. The
+            unforeseen emergence of the advanced undead has been a sobering
+            consequence, reminding us that the path to progress is fraught with
+            complex ethical considerations. At Neurosynth Dynamics, we are
+            committed to advancing science with a vigilant eye on the
+            implications of our research, ensuring that each step forward is
+            taken with the utmost respect for the delicate balance between human
+            potential and the natural order.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default About;
+```
+
+Contact.tsx -
+
+```js
+import React from 'react';
+
+const Contact = () => {
+  return (
+    <div id='contact' className='min-h-screen flex items-center justify-center'>
+      <div className='mx-auto max-w-7xl px-6 lg:px-8'>
+        <div className='mx-auto max-w-2xl lg:mx-0'>
+          <h2 className='text-4xl font-bold tracking-tight text-primary-green sm:text-6xl'>
+            Contact Us
+          </h2>
+          <p className='mt-6 text-lg leading-8'>
+            Embrace the frontier of innovation with us—where biotech and pharma
+            brilliance converge to redefine tomorrow.
+          </p>
+          <p className='mt-4 text-lg leading-8'>
+            For general inquiries, please email us at
+            <span className='font-bold text-primary-green'>
+              info@neurosynthdynamics.com
+            </span>.
+          </p>
+          <p className='mt-4 text-lg leading-8'>
+            For support, please contact
+            <span className='font-bold text-primary-green'>
+              support@neurosynthdynamics.com
+            </span>.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Contact;
+```
+
+Update the Sections.tsx file -
+
+```js
+import Nav from '../components/Nav';
+import Hero from '../components/Hero';
+import About from '../components/About';
+import Contact from '../components/Contact';
+
+const Landing = () => {
+  return (
+    <>
+      <Nav />
+      <Hero />
+      <About />
+      <Contact />
+    </>
+  );
+};
+
+export default Landing;
+```
+
+## Enter: Animate on Scroll (AOS)
+
+AOS is one of THE simplest ways that you can put some life into your application. It is a small but very useful package that allows you to easily add animations to elements as they appear. It's been a go-to for quick animations for years and always will be, definitely keep this in your back pocket. You can learn more about it [here](https://michalsnik.github.io/aos/).
+
+Import and Initialize AOS in App.tsx -
+
+```js
+import Aos from 'aos';
+import 'aos/dist/aos.css';
+import { useEffect } from 'react;
+
+// initialize AOS
+useEffect(() => {
+  Aos.init({});
+}, []);
+```
+
+Putting some life into our elements. We'll be using 3-4 attributes, depending on the element, to implement a staggered fade-in animation.
+
+```js
+// effect you're using
+data-aos='fade-up'
+// durationg of chosen effect
+data-aos-duration='500'
+// setting this to true will make the animation trigger once
+// setting to false will make the animation trigger everytime
+// element is in view but can impact performance
+data-aos-once='true'
+// add delay in 50 ms increments from the second element to the last element
+data-aos-delay='50'
+```
+
+### Adding AOS to Hero.tsx and About.tsx
+
+Upated Hero.tsx -
+
+```js
+const Hero = () => {
+  return (
+    <div id='home' className='min-h-screen flex items-center justify-center'>
+      <div className='px-4'>
+        <h1
+          data-aos-once='true'
+          data-aos='fade-up'
+          data-aos-duration='500'
+          className='text-primary-green text-5xl font-bold tracking-widest sm:text-7xl md:text-8xl'
+        >
+          Neurosynth
+        </h1>
+        <h1
+          data-aos='fade-up'
+          data-aos-duration='500'
+          data-aos-delay='50'
+          data-aos-once='true'
+          className='text-5xl tracking-widest sm:text-7xl md:text-8xl'
+        >
+          Dynamics
+        </h1>
+        <p
+          data-aos='fade-up'
+          data-aos-duration='500'
+          data-aos-delay='100'
+          data-aos-once='true'
+          className='mt-4 font-bold text-xl sm:text-2xl tracking-widest '
+        >
+          Engineering Evolution, Beyond Imagination
+        </p>
+        <div className='flex items-center gap-4 mt-4'>
+          <Link
+            to='contact'
+            smooth={true}
+            duration={0}
+            className='cursor-pointer'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            data-aos-delay='150'
+            data-aos-once='true'
+          >
+            <button className='bg-primary-green text-white text-xl hover:bg-green-700 px-3.5 py-2.5 shadow-custom shadow-primary-green transition duration-200'>
+              Join Trial
+            </button>
+          </Link>
+          <Link
+            to='about'
+            smooth={true}
+            duration={0}
+            className='cursor-pointer'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            data-aos-delay='200'
+            data-aos-once='true'
+          >
+            <button className='text-xl font-semibold leading-6 hover:text-primary-green transition duration-200'>
+              Learn more <span aria-hidden='true'>→</span>
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Hero;
+```
+
+Updated About.tsx -
+
+```js
+const About = () => {
+  return (
+    <div id='about' className='min-h-screen flex items-center justify-center'>
+      <div className='mx-auto max-w-7xl px-6 lg:px-8'>
+        <div className='mx-auto max-w-2xl lg:mx-0'>
+          <h2
+            data-aos-once='true'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            className='text-4xl font-bold tracking-tight text-primary-green sm:text-6xl'
+          >
+            About Us
+          </h2>
+          <p
+            data-aos-once='true'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            data-aos-delay='50'
+            className='mt-6 text-lg leading-8'
+          >
+            At Neurosynth Dynamics, we are at the forefront of biotechnological
+            and pharmaceutical innovation, dedicated to the relentless pursuit
+            of genetic engineering marvels and cybernetic advancements. Our
+            esteemed conglomerate is celebrated for breakthroughs that not only
+            push the boundaries of medical science but also integrate
+            cutting-edge computational biology to enhance human life. While our
+            public endeavors champion medical progress, our clandestine research
+            delves into the fusion of technology and biology, creating
+            groundbreaking neural-interface technologies and bio-coded materials
+            designed to amplify human capabilities beyond current limitations.
+          </p>
+          <p
+            data-aos-once='true'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='mt-6 text-lg leading-8'
+          >
+            In our quest for transcendent innovation, we recognize the profound
+            responsibility that accompanies our groundbreaking work. The
+            unforeseen emergence of the advanced undead has been a sobering
+            consequence, reminding us that the path to progress is fraught with
+            complex ethical considerations. At Neurosynth Dynamics, we are
+            committed to advancing science with a vigilant eye on the
+            implications of our research, ensuring that each step forward is
+            taken with the utmost respect for the delicate balance between human
+            potential and the natural order.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default About;
 ```
 
 

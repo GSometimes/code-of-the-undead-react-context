@@ -5,10 +5,21 @@ const About = () => {
     <div id='about' className='min-h-screen flex items-center justify-center'>
       <div className='mx-auto max-w-7xl px-6 lg:px-8'>
         <div className='mx-auto max-w-2xl lg:mx-0'>
-          <h2 className='text-4xl font-bold tracking-tight text-primary-green sm:text-6xl'>
+          <h2
+            data-aos-once='true'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            className='text-4xl font-bold tracking-tight text-primary-green sm:text-6xl'
+          >
             About Us
           </h2>
-          <p className='mt-6 text-lg leading-8'>
+          <p
+            data-aos-once='true'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            data-aos-delay='50'
+            className='mt-6 text-lg leading-8'
+          >
             At Neurosynth Dynamics, we are at the forefront of biotechnological
             and pharmaceutical innovation, dedicated to the relentless pursuit
             of genetic engineering marvels and cybernetic advancements. Our
@@ -20,7 +31,13 @@ const About = () => {
             groundbreaking neural-interface technologies and bio-coded materials
             designed to amplify human capabilities beyond current limitations.
           </p>
-          <p className='mt-6 text-lg leading-8'>
+          <p
+            data-aos-once='true'
+            data-aos='fade-up'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='mt-6 text-lg leading-8'
+          >
             In our quest for transcendent innovation, we recognize the profound
             responsibility that accompanies our groundbreaking work. The
             unforeseen emergence of the advanced undead has been a sobering
