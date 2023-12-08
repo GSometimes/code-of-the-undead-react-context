@@ -92,81 +92,412 @@ Stand ready, brave coder. Your skills in the arcane arts of React, TypeScript, a
 
 In your `src` directory, you'll want to create directories for `assets`, `components`, `pages`, `utils`, and `context`.
 
-![Directories](carousel-javascript-challenge/assets/carousel.jpg)
+![Directories](src/assets/folders.png)
 
 ## Update Tailwind Config and Import Fonts
+
 While Tailwind has a pretty vast library of colors, fonts, shadows, etc., it does give you the ability to add your own. To prepare us for what's coming later we're going to pre-emptively add colors, a default font, and a box-shadow, so you can how to add custom CSS to your application that is using Tailwind CSS.
 
-tailwind.config.js - 
+tailwind.config.js -
+
 ```js
 /** @type  {import('tailwindcss').Config} */
-module.exports  = {
-	content: ['./src/**/*.{js,jsx,ts,tsx}'],
-	theme: {
-		extend: {
-		colors: {
-		'primary-green':  '#0C4B23',
-		'secondary-green':  '#22CE61',
-		},
-		boxShadow: {
-			custom:
-			'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;',
-		},
-	},
-	fontFamily: {
-		sans: ['Lexend', 'sans-serif'],
-	},
-	// enables manual dark mode
-	darkMode:  'class',
-	},
-	plugins: [],
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        'primary-green': '#0C4B23',
+        'secondary-green': '#22CE61',
+      },
+      boxShadow: {
+        custom:
+          'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;',
+      },
+    },
+    fontFamily: {
+      sans: ['Lexend', 'sans-serif'],
+    },
+    // enables manual dark mode
+    darkMode: 'class',
+  },
+  plugins: [],
 };
 ```
 
 ## Create First Component and First Page
+
 The first page we're going to make is the `Sections.tsx` page. This is where we're going to be importing our components as we build them out. After making this page, import it in your `App.tsx` file.
 
 Sections.tsx -
+
 ```js
-import  React  from  'react'
+import React from 'react';
 
-const  Sections  = () => {
-	return (
-		<div>Sections</div>
-	)
-}
+const Sections = () => {
+  return <div>Sections</div>;
+};
 
-export  default  Sections
+export default Sections;
 ```
-App.tsx - 
+
+App.tsx -
+
 ```js
-function  App() {
-	return (
-		<>
-			<Sections  />
-		</>
-	);
+function App() {
+  return (
+    <>
+      <Sections />
+    </>
+  );
 }
 
-export  default  App;
+export default App;
 ```
 
 ## Building Out The Nav
 
 The navbar is going to be the meat and potatoes of this code along. We're going to be building out the navbar using Framer Motion and React Smooth Scroll. First, you'll see how to build out the navbar using the `useState` hook and then we'll refactor it to use Context.
 
-Nav.tsx - 
+Nav.tsx -
+
 ```js
-import  React  from  'react'
+import React from 'react';
+
+const Nav = () => {
+  return <div>Nav</div>;
+};
+
+export default Nav;
+```
+
+### Import Dependencies, Setup State, Setup Framer Variants
+
+Before we get into building out the UI lets import the dependencies we'll need, initialize some state, and instantiate a variable for our useMediaQuery hook in our `Nav.tsx` component.
+
+Imports -
+
+```js
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMediaQuery } from '../utils/useMediaQuery';
+import { Link } from 'react-scroll';
+import NSLogo from '../assets/NSLogo.png';
+```
+
+useMediaQuery Hook and State -
+
+```js
+// media query hook
+const isDesktop = useMediaQuery('(min-width: 1024px)');
+// hamburger menu toggle state
+const [toggled, setToggled] = useState < boolean > false;
+// state for background change on scroll
+const [scrollBackground, setScrollBackground] = useState < boolean > false;
+```
+
+### Framer Motion
+
+Framer Motion is powerful animation library for React applications through the use of `motion` components, for example `motion.div`, as you'll be using to animate the navbar component in this lesson. If you'd like to learn more about Framer Motion you can view the docs [here](https://www.framer.com/motion/introduction/).
+
+In this lesson you'll be using `variants` and `animate` to animate some of the elements in this nav component. A variant is essentialy a JavaScript object of key value pairs that can be used to define multiple states of style. Variants are handy when you need to handle multiple animated states. Animate is a prop you can pass a component to have it animate from it's current style to a target style.
+
+#### Variants -
+
+The two variants you'll be creating are a `navMotion` variant and a `navItemMotion` variant. The `navMotion` variant is going to handle the animation states for the nav container and staggering the animation for it's children, the nav links. The `navItemMotion` variant is going to handle the animation states for the nav links.
+navMotion and navItemMotion variants -
+
+```js
+// framer variants
+// nav variant
+const navMotion = {
+  // initial state - hidden
+  hidden: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      when: 'beforeChildren',
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      when: 'afterChildren',
+      staggerChildren: 0.15,
+      staggerDirection: -1,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+// nav item variant
+const navItemMotion = {
+  // initial state - hidden
+  hidden: {
+    opacity: 0,
+    y: 100,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    opacity: 0,
+    y: 50,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+};
+```
+
+#### Checkpoint
+The `Nax.tsx` component should currently look like this - 
+``` js
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMediaQuery } from '../utils/useMediaQuery';
+import { Link } from 'react-scroll';
+import NSLogo from '../assets/NSLogo.png';
+
+// framer variants
+// nav variant
+const navMotion = {
+  // initial state - hidden
+  hidden: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      when: 'beforeChildren',
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      when: 'afterChildren',
+      staggerChildren: 0.15,
+      staggerDirection: -1,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+// nav item variant
+const navItemMotion = {
+  // initial state - hidden
+  hidden: {
+    opacity: 0,
+    y: 100,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    opacity: 0,
+    y: 50,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+};
 
 const  Nav  = () => {
+  // media query hook
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  // hamburger menu toggle state
+  const [toggled, setToggled] = useState<boolean>(false);
+  // state for background change on scroll
+  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
 	return (
 		<div>Nav</div>
 	)
 }
 
 export  default  Nav;
+``` 
+### Conditionally Creating The Nav
+At this point you'll currently have most of the logic you'll need to make this nav work minus some logic that will be added once there is actually a navbar to interact with. 
+
+Let's start conditionally creating the nav. We'll start by creating the nav container. Update the `div` to a `nav` and add in some styles.
+```js
+<nav className='bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200'></nav>
 ```
+#### Conditional Rendering with useMediaQuery hook
+Using the variable that we instantiated, `isDesktop` we can build out our nav and have it styled differently depending on whether or not the viewport is greater than or less than 1024px. We'll be creating a view for `isDesktop` (Desktop/Laptop), `!isDesktop` (Tablet/Mobile), and the `toggled && !isDesktop`. 
+
+isDesktop - 
+```js
+{/* navbar if desktop */}
+{isDesktop && (
+  <>
+    <Link to='home' duration={0} smooth={true} className='cursor-pointer'>
+      <div className='flex items-center justify-center'>
+        <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+        <div className='flex flex-col justify-center -mx-2 leading-4'>
+          <h1 className='font-black text-primary-green'>Neurosynth</h1>
+          <h1 className='font-normal'>Dynamics</h1>
+        </div>
+      </div>
+    </Link>
+    <div className='flex items-center gap-4 text-sm'>
+      <Link
+        to='about'
+        duration={0}
+        smooth={true}
+        className='cursor-pointer text-base hover:text-primary-green transition duration-200'
+      >
+        Learn More
+      </Link>
+      <Link to='contact' duration={0} smooth={true} className=''>
+        <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 shadow-custom shadow-primary-green transition duration-200'>
+          Contact Us
+        </button>
+      </Link>
+    </div>
+  </>
+)}
+```
+!isDesktop -
+```js
+{/* navbar for tablet and below */}
+{/* hamburger icon */}
+{!isDesktop && (
+  <div className='flex items-center justify-between w-full'>
+    <Link
+      to='home'
+      smooth={true}
+      duration={0}
+      className='cursor-pointer'
+      onClick={() => setToggled(false)}
+    >
+      <div className='flex items-center justify-center'>
+        <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+        <div className='flex flex-col justify-center -mx-2 leading-4'>
+          <h1 className='font-black text-primary-green'>Neurosynth</h1>
+          <h1 className='font-normal'>Dynamics</h1>
+        </div>
+      </div>
+    </Link>
+    <div
+      onClick={() => setToggled((prevToggled) => !prevToggled)}
+      className='space-y-1.5 cursor-pointer z-50'
+    >
+      <motion.span
+        animate={{ rotateZ: toggled ? 45 : 0, y: toggled ? 8 : 0 }}
+        className='block h-0.5 w-8 bg-black'
+      ></motion.span>
+      <motion.span
+        animate={{ scale: toggled ? 0 : 1 }}
+        className='block h-0.5 w-8 bg-black'
+      ></motion.span>
+      <motion.span
+        animate={{
+          rotateZ: toggled ? -45 : 0,
+          y: toggled ? -8 : 0,
+        }}
+        className='block h-0.5 w-8 bg-black'
+      ></motion.span>
+    </div>
+  </div>
+)}
+```
+toggled and !isDesktop - 
+```js
+<AnimatePresence>
+  {/* nav container */}
+  {toggled && !isDesktop && (
+    <motion.div
+      variants={navMotion}
+      initial='hidden'
+      animate='visible'
+      exit='exit'
+      className='fixed top-[80px] left-4 w-[calc(100%-2rem)] h-screen flex items-center justify-center z-10 shadow-custom shadow-primary-green bg-white outline-primary-green'
+    >
+      {/* nav links container */}
+      <div className='flex flex-col items-center justify-center gap-12 h-full'>
+        <motion.div variants={navItemMotion}>
+          <Link
+            to='about'
+            smooth={true}
+            className='cursor-pointer text-2xl sm:text-4xl'
+            onClick={() => setToggled(false)}
+          >
+            Learn More
+          </Link>
+        </motion.div>
+        <motion.div variants={navItemMotion}>
+          <Link
+            to='contact'
+            smooth={true}
+            onClick={() => setToggled(false)}
+          >
+            <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 sm:p-4 shadow-custom shadow-primary-green transition duration-200 text-2xl sm:text-4xl'>
+              Join Trial
+            </button>
+          </Link>
+        </motion.div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+```
+
+
 
 # Code of the Undead: Firewall Chronicles
 
