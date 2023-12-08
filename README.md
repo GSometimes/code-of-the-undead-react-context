@@ -1126,14 +1126,17 @@ export default About;
 ```
 
 ## Time To Get Some Context
+
 ![gif, context](https://media.giphy.com/media/5SBPr8uRojC3D2pW96/giphy.gif)
 
-Context is a state management tool that allows you to share data in different parts of your applicatoin without having to pass it through each component one by one (prop drilling). 
+Context is a state management tool that allows you to share data in different parts of your applicatoin without having to pass it through each component one by one (prop drilling).
 
 ### Creating Context
+
 It's time to dust off that `context` directory that you created. What we're going to be doing is taking all of the logic from our Nav.tsx component and placing it a context file.
 
-Import Dependencies - 
+Import Dependencies -
+
 ```js
 import {
   createContext,
@@ -1146,22 +1149,26 @@ import {
 } from 'react';
 import { useMediaQuery } from '../utils/useMediaQuery';
 ```
+
 In the dependencies you'll see some terms you have seen and also some you haven't seen yet. Let's talk about some of them -
+
 ```js
-createContext // creates context object for passing data
-Dispatch // a function that takes an action
-SetStateAction // a specific type used when updating state
-useMemo // a hook that can be used to help prevent unnecessary re-renders and improve performance
+createContext; // creates context object for passing data
+Dispatch; // a function that takes an action
+SetStateAction; // a specific type used when updating state
+useMemo; // a hook that can be used to help prevent unnecessary re-renders and improve performance
 ```
-Setup Types - 
+
+Setup Types -
+
 ```js
 // type navbar context props
 type NavbarContextProps = {
-  isDesktop: boolean;
-  toggled: boolean;
-  setToggled: Dispatch<SetStateAction<boolean>>;
-  scrollBackground: boolean;
-  setScrollBackground: Dispatch<SetStateAction<boolean>>;
+  isDesktop: boolean,
+  toggled: boolean,
+  setToggled: Dispatch<SetStateAction<boolean>>,
+  scrollBackground: boolean,
+  setScrollBackground: Dispatch<SetStateAction<boolean>>,
 };
 
 // interface context provider props
@@ -1169,7 +1176,9 @@ interface ContextProviderProps {
   children: ReactNode;
 }
 ```
-Talking Types - 
+
+Talking Types -
+
 ```js
 // type navbar context props
 type NavbarContextProps = {
@@ -1185,15 +1194,19 @@ interface ContextProviderProps {
   children // the children prop represents the content that will be wrapped by the provider, a ReactNode which is a type that includes anything that can be rendered in React, in this case a React component
 }
 ```
+
 In summary, NavbarContextProps is a custom type that is defining the structure and type of the data being used, such as the state variable and functions to update them. ContextProviderProps is an interface that is defining the props being accepted by the provider component, the children (React components) it will render.
 
 Create Context -
+
 ```js
 export const NavbarContext = createContext<NavbarContextProps>({} as NavbarContextProps);
 ```
+
 In `NavbarContext` we're creating a context object and giving it the NavbarContextProps type that we created above. When you createContext you give it a default value. In our case we're giving it a default value of an empty object and through type assertion, which means we're explicitly telling the empty object (in this instance) to be a specific type, `as NavbarContextProps` in this instance.
 
-Create The Provider - 
+Create The Provider -
+
 ```js
 export const NavProvider = ({ children }: ContextProviderProps) => {
   return (
@@ -1203,17 +1216,19 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
   );
 };
 ```
-The `NavProvider` is a function component that houses all of the logic that you've passed to it, such as state, and it will "provide" context to the components that it's wrapping, like our nav component. 
 
-Adding All The Logic To The Provider - 
+The `NavProvider` is a function component that houses all of the logic that you've passed to it, such as state, and it will "provide" context to the components that it's wrapping, like our nav component.
+
+Adding All The Logic To The Provider -
+
 ```js
 export const NavProvider = ({ children }: ContextProviderProps) => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState<boolean>(false);
+  const [toggled, setToggled] = useState < boolean > false;
   // background change on scroll state
-  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
+  const [scrollBackground, setScrollBackground] = useState < boolean > false;
 
   // change background function
   const changeBackground = () => {
@@ -1254,8 +1269,11 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
   );
 };
 ```
+
 ### Checkpoint
-Updated Context.tsx - 
+
+Updated Context.tsx -
+
 ```js
 import {
   createContext,
@@ -1335,6 +1353,334 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
 };
 ```
 
+### Wrapping and Refactoring
+
+Now that we've created context we're going to put it to some use. We're going to start by importing the NavProvider and wrap the provider around Sections.
+
+In your App.tsx wrap `<Sections />` with the provider -
+
+```js
+import Sections from './pages/Sections';
+import Aos from 'aos';
+import 'aos/dist/aos.css';
+import { useEffect } from 'react';
+import { NavProvider } from './Context/Context';
+
+function App() {
+  // initialize AOS
+  useEffect(() => {
+    Aos.init({});
+  }, []);
+
+  return (
+    <>
+      <NavProvider>
+        <Sections />
+      </NavProvider>
+    </>
+  );
+}
+
+export default App;
+```
+
+### Finishing The Mission
+
+Let's finish this. In your components directory create another file and name it `NavContext.tsx`.
+
+Import Dependencies -
+
+```js
+import { useContext } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-scroll';
+import NSLogo from '../assets/NSLogo.png';
+import { NavbarContext } from '../Context/Context';
+```
+
+Most of these might look familiar because we're using the same dependencies we used in Nav.tsx. In addition to those we're importing Context and NavbarContext. From here, let's grab the rest of the code from Nav.tsx but we're going to remove the old logic and grab what we need from context.
+**Side Note: As you refactor you'll notice that it'll get really angry for a second but it'll be fine. Everything's fine.**
+
+Before -
+
+```js
+const Nav = () => {
+  // media query hook
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  // hamburger menu toggle state
+  const [toggled, setToggled] = useState<boolean>(false);
+  // state for background change on scroll
+  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
+
+  // change background function
+  const changeBackground = () => {
+    if (window.scrollY > 50) {
+      setScrollBackground(true);
+    } else {
+      setScrollBackground(false);
+    }
+  };
+
+  // event listener for scroll
+  window.addEventListener('scroll', changeBackground);
+
+  // useEffect for preventing scroll when nav is toggled
+  useEffect(() => {
+    if (toggled) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [toggled]);
+  ...
+}
+```
+
+After -
+
+```js
+// context
+const { isDesktop, toggled, setToggled, scrollBackground } =
+  useContext(NavbarContext);
+```
+
+See what had happened was, we took all of the logic we had originally written and put it into our context file. The states for toggled, and scrollBackground, the function for changeBackground, the useMediaQuery hook, and the useEffect to prevent scrolling are now all in context.
+
+What we can do now is test our newly refactored and more powerful NavContext component and make sure that the city is saved. Let's add `NavContext` to the `Sections.tsx` file and render it on the page.
+
+Import Dependency -
+
+```js
+import NavContext from '../components/NavContext';
+// don't forget to comment out Nav since we no longer need it
+// import Nav from '../components/Nav';s
+```
+
+Comment out `Nav` and add `NavContext` -
+
+```js
+{
+  /* <Nav /> */
+}
+<NavContext />;
+```
+
+# Mission Complete (For Now...?)
+
+### Victory In Code
+
+In the aftermath of a harrowing digital siege, the city stands resilient, its safety secured by the Firewall Chronicles—a testament to Alex's leadership and the collective brilliance of a team of coders. Their triumphant innovation, interweaving React's flexibility, TypeScript's rigor, and Framer Motion's dynamism, not only repelled the undead menace but also transformed the city into a beacon of hope and technological marvel. As the saga of survival concludes, it leaves behind a legacy of courage and ingenuity, inspiring future generations to face darkness with the light of innovation.
+
+Updated NavContext.tsx file -
+
+```js
+import { useContext } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-scroll';
+import NSLogo from '../assets/NSLogo.png';
+import { NavbarContext } from '../Context/Context';
+
+// framer variants
+// nav variant
+const navMotion = {
+  // initial state - hidden
+  hidden: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      when: 'beforeChildren',
+      staggerChildren: 0.15,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      when: 'afterChildren',
+      staggerChildren: 0.15,
+      staggerDirection: -1,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+// nav item variant
+const navItemMotion = {
+  // initial state - hidden
+  hidden: {
+    opacity: 0,
+    y: 50,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // active state - visible
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+  // exit state - exit
+  exit: {
+    opacity: 0,
+    y: 50,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+console.log('navbar context being used');
+
+const NavContext = () => {
+  // context
+  const { isDesktop, toggled, setToggled, scrollBackground } =
+    useContext(NavbarContext);
+
+  return (
+    <nav
+      className={
+        scrollBackground
+          ? 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200 shadow-custom shadow-primary-green'
+          : 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200'
+      }
+    >
+      {/* navbar if desktop */}
+      {isDesktop && (
+        <>
+          <Link to='home' duration={0} smooth={true} className='cursor-pointer'>
+            <div className='flex items-center justify-center'>
+              <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+              <div className='flex flex-col justify-center -mx-2 leading-4'>
+                <h1 className='font-black text-primary-green'>Neurosynth</h1>
+                <h1 className='font-normal'>Dynamics</h1>
+              </div>
+            </div>
+          </Link>
+          <div className='flex items-center gap-4 text-sm'>
+            <Link
+              to='about'
+              duration={0}
+              smooth={true}
+              className='cursor-pointer text-base'
+            >
+              Learn More
+            </Link>
+            <Link to='contact' duration={0} smooth={true} className=''>
+              <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 shadow-custom shadow-primary-green transition duration-200'>
+                Join Trial
+              </button>
+            </Link>
+          </div>
+        </>
+      )}
+
+      {/* navbar for tablet and below */}
+      {/* hamburger icon */}
+      {!isDesktop && (
+        <div className='flex items-center justify-between w-full'>
+          <Link
+            to='home'
+            smooth={true}
+            duration={0}
+            className='cursor-pointer'
+            onClick={() => setToggled(false)}
+          >
+            <div className='flex items-center justify-center'>
+              <img src={NSLogo} alt='NeuroSynth Logo' className='w-12' />
+              <div className='flex flex-col justify-center -mx-2 leading-4'>
+                <h1 className='font-black text-primary-green'>Neurosynth</h1>
+                <h1 className='font-normal'>Dynamics</h1>
+              </div>
+            </div>
+          </Link>
+          <div
+            onClick={() => setToggled((prevToggled) => !prevToggled)}
+            className='space-y-1.5 cursor-pointer z-50'
+          >
+            <motion.span
+              animate={{ rotateZ: toggled ? 45 : 0, y: toggled ? 8 : 0 }}
+              className='block h-0.5 w-8 bg-black'
+            ></motion.span>
+            <motion.span
+              animate={{ scale: toggled ? 0 : 1 }}
+              className='block h-0.5 w-8 bg-black'
+            ></motion.span>
+            <motion.span
+              animate={{
+                rotateZ: toggled ? -45 : 0,
+                y: toggled ? -8 : 0,
+              }}
+              className='block h-0.5 w-8 bg-black'
+            ></motion.span>
+          </div>
+        </div>
+      )}
+
+      {/* hamburger menu */}
+      <AnimatePresence>
+        {/* nav container */}
+        {toggled && !isDesktop && (
+          <motion.div
+            variants={navMotion}
+            initial='hidden'
+            animate='visible'
+            exit='exit'
+            className='fixed top-[80px] left-4 w-[calc(100%-2rem)] h-screen flex items-center justify-center z-10 shadow-custom shadow-primary-green bg-white outline-primary-green'
+          >
+            {/* nav links container */}
+            <div className='flex flex-col items-center justify-center gap-12 h-full'>
+              <motion.div variants={navItemMotion}>
+                <Link
+                  to='about'
+                  smooth={true}
+                  className='cursor-pointer text-2xl sm:text-4xl'
+                  onClick={() => setToggled(false)}
+                >
+                  Learn More
+                </Link>
+              </motion.div>
+              <motion.div variants={navItemMotion}>
+                <Link
+                  to='contact'
+                  smooth={true}
+                  onClick={() => setToggled(false)}
+                >
+                  <button className='bg-primary-green text-white hover:bg-green-700 px-3.5 py-2.5 sm:p-4 shadow-custom shadow-primary-green transition duration-200 text-2xl sm:text-4xl'>
+                    Join Trial
+                  </button>
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+};
+
+export default NavContext;
+```
+
 # Code of the Undead: Firewall Chronicles
 
 Prologue:
@@ -1347,18 +1693,20 @@ Alex, now a celebrated defender of the city, realized the need for a more advanc
 
 Act 2:
 
-Alex and a team of skilled coders dove into the task. They envisioned a control dashboard with an animated navbar and a hero section, easily navigable and responsive to the needs of the city's defenders. Using React for efficient UI development, TypeScript for robust coding, and Framer Motion for fluid animations, they set out to create an interface that was both functional and visually impressive. The navbar would include intuitive, animated menus, and the hero section, a central display of the city's status, with a light/dark mode toggle for accessibility.
+Alex and a team of skilled coders dove into the task. They envisioned a control dashboard with an animated navbar and a hero section, easily navigable and responsive to the needs of the city's defenders. Using React for efficient UI development, TypeScript for robust coding, and Framer Motion for fluid animations, they set out to create an interface that was both functional and visually impressive. The navbar would include intuitive, animated menus, and the hero section, and a central display of the city's status.
 
 The coding team meticulously crafted each component, integrating Context for state management, ensuring seamless communication across the interface. The hero section, with its real-time updates and animated features, became the heart of the city's new defense mechanism.
 
 Act 3:
 
-As the undead horde approached, the new system was put to the test. The animated navbar allowed for rapid navigation between defense modules, while the hero section displayed real-time analytics of the breach points. The light/dark mode proved essential in varying visibility conditions. Alex and the team manipulated the firewall through the interface, orchestrating a symphony of defensive strategies. They unleashed a series of countermeasures, coded with precision and brought to life through the animated interface.
+As the undead horde approached, the new system was put to the test. The animated navbar allowed for rapid navigation between defense modules, while the hero section displayed real-time analytics of the breach points. Alex and the team manipulated the firewall through the interface, orchestrating a symphony of defensive strategies. They unleashed a series of countermeasures, coded with precision and brought to life through the animated interface.
 
 The firewall, powered by their innovative coding, adapted to each new challenge, repelling the undead with unprecedented efficiency. It wasn't just a barrier but a dynamic entity, capable of learning and evolving.
 
 Epilogue:
 
-In the aftermath, the city emerged unscathed, its new firewall an unbreakable shield. Alex and the team were hailed as heroes, their coding skills having saved the city once more. The control interface, with its animated navbar and hero section, stood as a symbol of their triumph.
+In the aftermath, the city emerged unscathed, its new firewall an unbreakable shield. Alex and the team were hailed as heroes, their coding skills having saved the city once more. The control interface, with its animated navbar, stood as a symbol of their triumph.
 
 As the world rebuilt from the ruins, the tale of Alex and the fortress city spread, inspiring others to blend technology and resilience. The "Code of the Undead" saga continued, not just as a story of survival, but as a beacon of innovation in the face of darkness.
+
+![Zombies](src/assets/Zombies-1.png)

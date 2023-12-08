@@ -15,8 +15,6 @@ module.exports = {
     fontFamily: {
       sans: ['Lexend', 'sans-serif'],
     },
-    // enables manual dark mode
-    darkMode: 'class',
   },
   plugins: [],
 };
