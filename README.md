@@ -137,6 +137,48 @@ module.exports = {
 };
 ```
 
+## useMediaQuery
+Our last bit of setup, for now, will be adding the `useMediaQuery` hook to our utils directory. The `useMediaQuery` hook is a custom hook is used for responsive design. It basically is a way for you listen for a match to a CSS media query and conditionally render your UI accordingly.
+
+useMediaQuery.tsx -
+```js
+import { useEffect, useState } from 'react';
+
+export function useMediaQuery(query: string): boolean {
+  const getMatches = (query: string): boolean => {
+    // Prevents SSR issues
+    if (typeof window !== 'undefined') {
+      return window.matchMedia(query).matches;
+    }
+    return false;
+  };
+
+  const [matches, setMatches] = useState<boolean>(getMatches(query));
+
+  function handleChange() {
+    setMatches(getMatches(query));
+  }
+
+  useEffect(() => {
+    const matchMedia = window.matchMedia(query);
+
+    // Triggered at the first client-side load and if query changes
+    handleChange();
+
+    // Listen matchMedia
+    matchMedia.addEventListener('change', handleChange);
+
+    return () => {
+      // Remove event listener
+      matchMedia.removeEventListener('change', handleChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  return matches;
+}
+```
+
 ## Create First Component and First Page
 
 The first page we're going to make is the `Sections.tsx` page. This is where we're going to be importing our components as we build them out. After making this page, import it in your `App.tsx` file.
