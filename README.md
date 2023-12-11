@@ -203,9 +203,9 @@ useMediaQuery Hook and State -
 // media query hook
 const isDesktop = useMediaQuery('(min-width: 1024px)');
 // hamburger menu toggle state
-const [toggled, setToggled] = useState < boolean > false;
+const [toggled, setToggled] = useState<boolean(false);
 // state for background change on scroll
-const [scrollBackground, setScrollBackground] = useState < boolean > false;
+const [scrollBackground, setScrollBackground] = useState<boolean(false);
 ```
 
 ### React Smooth Scroll
@@ -386,9 +386,9 @@ const Nav = () => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState < boolean > false;
+  const [toggled, setToggled] = useState<boolean(false);
   // state for background change on scroll
-  const [scrollBackground, setScrollBackground] = useState < boolean > false;
+  const [scrollBackground, setScrollBackground] = useState<boolean(false);
   return <div>Nav</div>;
 };
 
@@ -568,6 +568,18 @@ useEffect(() => {
 }, [toggled]);
 ```
 
+Update the nav container to include the scrollBackground state - 
+
+```js
+<nav
+  className={
+    scrollBackground
+      ? 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200 shadow-custom shadow-primary-green'
+      : 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200'
+  }
+>
+```
+
 ### Checkpoint
 
 At this point your navbar should be built and responsive. What'll be coming next is building out some more components so you can see how React-Scroll works, setting up Animate on Scroll (AOS), and refactoring the nav logic to use Context.
@@ -653,9 +665,9 @@ const Nav = () => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState < boolean > false;
+  const [toggled, setToggled] = useState<boolean(false);
   // state for background change on scroll
-  const [scrollBackground, setScrollBackground] = useState < boolean > false;
+  const [scrollBackground, setScrollBackground] = useState<boolean(false);
 
   // change background function
   const changeBackground = () => {
@@ -1226,9 +1238,9 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState < boolean > false;
+  const [toggled, setToggled] = useState<boolean(false);
   // background change on scroll state
-  const [scrollBackground, setScrollBackground] = useState < boolean > false;
+  const [scrollBackground, setScrollBackground] = useState<boolean(false);
 
   // change background function
   const changeBackground = () => {
