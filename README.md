@@ -245,9 +245,9 @@ useMediaQuery Hook and State -
 // media query hook
 const isDesktop = useMediaQuery('(min-width: 1024px)');
 // hamburger menu toggle state
-const [toggled, setToggled] = useState<boolean(false);
+const [toggled, setToggled] = useState<boolean>(false);
 // state for background change on scroll
-const [scrollBackground, setScrollBackground] = useState<boolean(false);
+const [scrollBackground, setScrollBackground] = useState<boolean>(false);
 ```
 
 ### React Smooth Scroll
@@ -428,9 +428,9 @@ const Nav = () => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState<boolean(false);
+  const [toggled, setToggled] = useState<boolean>(false);
   // state for background change on scroll
-  const [scrollBackground, setScrollBackground] = useState<boolean(false);
+  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
   return <div>Nav</div>;
 };
 
@@ -707,9 +707,9 @@ const Nav = () => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState<boolean(false);
+  const [toggled, setToggled] = useState<boolean>(false);
   // state for background change on scroll
-  const [scrollBackground, setScrollBackground] = useState<boolean(false);
+  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
 
   // change background function
   const changeBackground = () => {
@@ -1280,9 +1280,9 @@ export const NavProvider = ({ children }: ContextProviderProps) => {
   // media query hook
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   // hamburger menu toggle state
-  const [toggled, setToggled] = useState<boolean(false);
+  const [toggled, setToggled] = useState<boolean>(false);
   // background change on scroll state
-  const [scrollBackground, setScrollBackground] = useState<boolean(false);
+  const [scrollBackground, setScrollBackground] = useState<boolean>(false);
 
   // change background function
   const changeBackground = () => {
