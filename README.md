@@ -26,7 +26,7 @@ npx create-react-app react-context --template typescript
 
 **Journey to the React Bastion.** With the realm created, navigate to your newly formed citadel by entering the `cd your-app-name` command. Here, in this digital fortress, you will harness the powers of React and TypeScript to craft your defenses.
 
-**Summon the Tailwind Spirits.** Invoke the mystical Tailwind CSS by casting `npm install tailwindcss postcss autoprefixer` followed by `npx tailwindcss init -p`. This spell weaves the essence of Tailwind into your domain, granting you the power to style your bastion with elegance and speed.
+**Summon the Tailwind Spirits.** Invoke the mystical Tailwind CSS by casting `npm install -D tailwindcss` followed by `npx tailwindcss init -p`. This spell weaves the essence of Tailwind into your domain, granting you the power to style your bastion with elegance and speed.
 
 ```js
 npm install -D tailwindcss
