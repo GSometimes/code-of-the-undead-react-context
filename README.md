@@ -1265,7 +1265,7 @@ Create The Provider -
 ```js
 export const NavProvider = ({ children }: ContextProviderProps) => {
   return (
-    <NavbarContext.Provider value={acceptedValue}>
+    <NavbarContext.Provider value={acceptedValues}>
       {children}
     </NavbarContext.Provider>
   );
