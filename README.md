@@ -1495,7 +1495,7 @@ After -
 
 ```js
 // context
-const { isDesktop, toggled, setToggled, scrollBackground } =
+const { isDesktop, toggled, setToggled, scrollBackground, setScrollBackground } =
   useContext(NavbarContext);
 ```
 
