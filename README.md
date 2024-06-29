@@ -970,16 +970,18 @@ const Contact = () => {
             brilliance converge to redefine tomorrow.
           </p>
           <p className='mt-4 text-lg leading-8'>
-            For general inquiries, please email us at
+            For general inquiries, please email us at {' '}
             <span className='font-bold text-primary-green'>
               info@neurosynthdynamics.com
-            </span>.
+            </span>
+            .
           </p>
           <p className='mt-4 text-lg leading-8'>
-            For support, please contact
+            For support, please contact {' '}
             <span className='font-bold text-primary-green'>
               support@neurosynthdynamics.com
-            </span>.
+            </span>
+            .
           </p>
         </div>
       </div>
@@ -988,6 +990,7 @@ const Contact = () => {
 };
 
 export default Contact;
+
 ```
 
 Update the Sections.tsx file -
