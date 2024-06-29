@@ -537,7 +537,7 @@ isDesktop -
         ></motion.span>
       </div>
     </div>
-  );
+  )
 }
 ```
 
@@ -613,13 +613,11 @@ useEffect(() => {
 Update the nav container to include the scrollBackground state - 
 
 ```js
-<nav
-  className={
-    scrollBackground
-      ? 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200 shadow-custom shadow-primary-green'
-      : 'bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200'
-  }
->
+    <nav
+      className={`bg-white h-14 w-[calc(100%-2rem)] fixed top-0 left-4 z-10 flex items-center justify-between p-8 font-medium my-2 transition ease-in-out duration-200 ${
+        scrollBackground ? 'shadow-custom shadow-primary-green' : ''
+      }`}
+    >
 ```
 
 ### Checkpoint
